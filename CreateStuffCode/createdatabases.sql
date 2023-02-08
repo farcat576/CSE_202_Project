@@ -1,0 +1,7 @@
+-- CREATE DATABASE Level_1; USE Level_1;
+-- CREATE DATABASE Level_2; USE Level_2;
+-- CREATE DATABASE Level_3; USE Level_3;
+-- CREATE DATABASE Level_4; USE Level_4;
+-- CREATE DATABASE Level_5; USE Level_5;
+
+CREATE DATABASE All_Levels;
