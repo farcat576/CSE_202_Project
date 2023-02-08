@@ -1,5 +1,6 @@
 USE All_Levels;
 
+-- table for Aadhar Card
 CREATE TABLE AADHAR_CARD(
 aadhar_card_id CHAR(12),
 person_name VARCHAR(20) NOT NULL,
@@ -14,6 +15,7 @@ CHECK (sex='M' OR  sex='F'),
 PRIMARY KEY(aadhar_card_id)
 );
 
+
 -- mapping a dairy farmer to their aadhar card
 CREATE TABLE Dairy_Farmer_Possesses(
 farmer_identification_id CHAR(6),
@@ -23,7 +25,7 @@ PRIMARY KEY(farmer_identification_id)
 );
 
 
--- a dairy farmer account
+-- table for Dairy Farmer (a dairy farmer account)
 CREATE TABLE Dairy_Farmer(
 farmer_identification_id CHAR(6),
 milk_quantity DECIMAL(14,2) DEFAULT 0,
@@ -43,6 +45,7 @@ cost DECIMAL(14,2) DEFAULT 0,
 PRIMARY KEY(state_code)
 );
 
+-- table for VDCS
 CREATE TABLE VDCS(
 vdcs_code CHAR(6),
 cattlefeed INT DEFAULT 0,
@@ -52,6 +55,7 @@ village_name VARCHAR(20) NOT NULL,
 PRIMARY KEY(vdcs_code)
 );
 
+-- table for VDCSL
 CREATE TABLE VDCS_L(
 vdcsl_id CHAR(6),
 salary DECIMAL(14,2) DEFAULT 0,
@@ -93,7 +97,7 @@ PRIMARY KEY(batch_id)
 ,FOREIGN KEY(sell_district_code) REFERENCES DMU(district_code)
 );
 
--- table for vet and animal husbandry personnel
+-- table for Vet and Animal Husbandry Personnel
 CREATE TABLE VAHP(
 vah_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- each VAHP must have an aadhar card, therefore NOT NULL
@@ -105,7 +109,7 @@ FOREIGN KEY(district_code) REFERENCES DMU(district_code),
 FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
--- table for processing workers
+-- table for Processing Workers
 CREATE TABLE PW(
 pw_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- each PW must have an aadhar card, therefore NOT NULL
@@ -118,7 +122,7 @@ FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
 
-
+-- mapping for which VDCS works under which DMU
 CREATE TABLE VDCS_Works_Under_DMU(
 district_code CHAR(6) NOT NULL, -- every village must work under some DMU, therefore NOT NULL
 vdcs_code CHAR(6), 
@@ -126,7 +130,7 @@ PRIMARY KEY(vdcs_code),
 FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
-
+-- mapping for which DMU a VDCSL works for
 CREATE TABLE Part_Of(
 district_code CHAR(6) NOT NULL, -- every VDCSL must be a part of some DMU, therefore NOT NULL
 vdcsl_id CHAR(6), 
@@ -135,7 +139,7 @@ FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
 
-
+-- mapping for which VAHP works for which VDCS
 CREATE TABLE Works_Here(
 vahp_id CHAR(6),
 vdcs_code CHAR(6),
@@ -144,7 +148,7 @@ FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
 );
 
 
--- table for mapping a vet and animal husbandry personnel to their aadhar card
+-- table for mapping a Vet and Animal Husbandry Personnel to their Aadhar Card
 CREATE TABLE VAHP_Possesses(
 vahp_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- every vet and animal husbandry personnel must have a registered aadhar card, therefore NOT NULL
@@ -153,7 +157,7 @@ FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
 
--- table for mapping a processing worker to their aadhar card
+-- table for mapping a Processing Worker to their Aadhar Card
 CREATE TABLE PW_Possesses(
 pw_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- every processing worker must have a registered aadhar card, therefore NOT NULL
@@ -162,6 +166,7 @@ FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
 
+-- table for mapping which Dairy Farmer belongs to which VDCS
 CREATE TABLE DF_Works_Under_VDCS(
 farmer_identification_id CHAR(6),
 vdcs_code CHAR(6) NOT NULL, -- every farmer must belong to a vdcs, therefore NOT NULL
@@ -169,7 +174,7 @@ PRIMARY KEY(farmer_identification_id),
 FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
 );
 
-
+-- table for mapping which VDCSL a Dairy Farmer voted for
 CREATE TABLE Elects(
 farmer_identification_id CHAR(6),
 vdcsl_id CHAR(6), -- a farmer can choose not to vote for a representative, therefore NULL is allowed
@@ -178,6 +183,7 @@ PRIMARY KEY(farmer_identification_id)
 );
 
 
+--  table for mapping a VDCSL to their Aadhar Card
 CREATE TABLE VDCSL_Possesses(
 vdcsl_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- every farmer must have a registered aadhar card, therefore NOT NULL
@@ -212,6 +218,7 @@ FOREIGN KEY(district_code) REFERENCEs DMU(district_code)
 );
 
 
+-- table for mapping which DMU works under which SMF
 CREATE TABLE DMU_Works_Under_SMF(
 state_code CHAR(6) NOT NULL, -- every DMU must work under an SMF, therefore NOT NULL
 district_code CHAR(6), 
@@ -219,7 +226,7 @@ PRIMARY KEY(district_code),
 FOREIGN KEY(state_code) REFERENCES SMF(state_code)
 );
 
-
+-- table of records of sales made by the SMF
 CREATE TABLE Sells(
 state_code CHAR(6),
 batch_id CHAR(10), 
