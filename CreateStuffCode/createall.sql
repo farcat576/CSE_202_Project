@@ -1,4 +1,4 @@
-DROP DATABASE All_Levels;
+DROP DATABASE IF EXISTS All_Levels;
 CREATE DATABASE All_Levels;
 USE All_Levels;
 
