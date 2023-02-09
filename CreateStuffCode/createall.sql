@@ -100,7 +100,6 @@ PRIMARY KEY(batch_id)
 -- table for Vet and Animal Husbandry Personnel
 CREATE TABLE VAHP(
 vah_id CHAR(6),
-aadhar_card_id CHAR(12) NOT NULL, -- each VAHP must have an aadhar card, therefore NOT NULL
 last_paid DATE,
 salary DECIMAL(14,2) DEFAULT 0,
 district_code CHAR(6) NOT NULL, -- each VAHP must must be hired by some DMU, therefore NOT NULL
@@ -112,7 +111,6 @@ FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 -- table for Processing Workers
 CREATE TABLE PW(
 pw_id CHAR(6),
-aadhar_card_id CHAR(12) NOT NULL, -- each PW must have an aadhar card, therefore NOT NULL
 last_paid DATE,
 salary DECIMAL(14,2) DEFAULT 0,
 district_code CHAR(6) NOT NULL, -- each VAHP must must be hired by some DMU, therefore NOT NULL
