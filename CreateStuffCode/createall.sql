@@ -104,8 +104,7 @@ last_paid DATE,
 salary DECIMAL(14,2) DEFAULT 0,
 district_code CHAR(6) NOT NULL, -- each VAHP must must be hired by some DMU, therefore NOT NULL
 PRIMARY KEY(vah_id),
-FOREIGN KEY(district_code) REFERENCES DMU(district_code),
-FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
+FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
 -- table for Processing Workers
@@ -115,8 +114,7 @@ last_paid DATE,
 salary DECIMAL(14,2) DEFAULT 0,
 district_code CHAR(6) NOT NULL, -- each VAHP must must be hired by some DMU, therefore NOT NULL
 PRIMARY KEY(pw_id),
-FOREIGN KEY(district_code) REFERENCES DMU(district_code),
-FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
+FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
 
