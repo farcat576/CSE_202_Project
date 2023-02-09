@@ -1,3 +1,5 @@
+DROP DATABASE All_Levels;
+CREATE DATABASE All_Levels;
 USE All_Levels;
 
 -- table for Aadhar Card
@@ -59,7 +61,7 @@ PRIMARY KEY(vdcs_code)
 CREATE TABLE VDCS_L(
 vdcsl_id CHAR(6),
 salary DECIMAL(14,2) DEFAULT 0,
-last_paid DECIMAL(14,2) DEFAULT 0,
+last_paid DATETIME,
 vdcs_code CHAR(6) NOT NULL,
 PRIMARY KEY(vdcsl_id)
 ,FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
@@ -120,16 +122,16 @@ FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 
 -- mapping for which VDCS works under which DMU
 CREATE TABLE VDCS_Works_Under_DMU(
-district_code CHAR(6) NOT NULL, -- every village must work under some DMU, therefore NOT NULL
 vdcs_code CHAR(6), 
+district_code CHAR(6) NOT NULL, -- every village must work under some DMU, therefore NOT NULL
 PRIMARY KEY(vdcs_code),
 FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
 -- mapping for which DMU a VDCSL works for
 CREATE TABLE Part_Of(
-district_code CHAR(6) NOT NULL, -- every VDCSL must be a part of some DMU, therefore NOT NULL
 vdcsl_id CHAR(6), 
+district_code CHAR(6) NOT NULL, -- every VDCSL must be a part of some DMU, therefore NOT NULL
 PRIMARY KEY(vdcsl_id),
 FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
@@ -216,16 +218,16 @@ FOREIGN KEY(district_code) REFERENCEs DMU(district_code)
 
 -- table for mapping which DMU works under which SMF
 CREATE TABLE DMU_Works_Under_SMF(
-state_code CHAR(6) NOT NULL, -- every DMU must work under an SMF, therefore NOT NULL
 district_code CHAR(6), 
+state_code CHAR(6) NOT NULL, -- every DMU must work under an SMF, therefore NOT NULL
 PRIMARY KEY(district_code),
 FOREIGN KEY(state_code) REFERENCES SMF(state_code)
 );
 
 -- table of records of sales made by the SMF
 CREATE TABLE Sells(
-state_code CHAR(6),
 batch_id CHAR(10), 
+state_code CHAR(6),
 PRIMARY KEY(batch_id),
 FOREIGN KEY(state_code) REFERENCES SMF(state_code)
 );
