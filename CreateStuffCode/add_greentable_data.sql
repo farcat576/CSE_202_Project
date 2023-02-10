@@ -177,9 +177,9 @@ COMMIT;
 
 
 SET AUTOCOMMIT=0;
-insert into DMU_Works_Under_SMF values('GUJSUR','001');
-insert into DMU_Works_Under_SMF values('GUJKUT','001');
-insert into DMU_Works_Under_SMF values('GUJAND','001');
+insert into DMU_Works_Under_SMF values('GUJSUR','GUJ');
+insert into DMU_Works_Under_SMF values('GUJKUT','GUJ');
+insert into DMU_Works_Under_SMF values('GUJAND','GUJ');
 COMMIT;
 
 
@@ -217,12 +217,12 @@ insert into PW_Possesses values('PW030','123456780030');
 COMMIT;
 
 SET AUTOCOMMIT=0;
-insert into Sells values('BAT0000001','001');
-insert into Sells values('BAT0000002','001');
-insert into Sells values('BAT0000003','001');
-insert into Sells values('BAT0000004','001');
-insert into Sells values('BAT0000005','001');
-insert into Sells values('BAT0000006','001');
+insert into Sells values('BAT0000001','GUJ');
+insert into Sells values('BAT0000002','GUJ');
+insert into Sells values('BAT0000003','GUJ');
+insert into Sells values('BAT0000004','GUJ');
+insert into Sells values('BAT0000005','GUJ');
+insert into Sells values('BAT0000006','GUJ');
 COMMIT;
 
 SET AUTOCOMMIT=0;
