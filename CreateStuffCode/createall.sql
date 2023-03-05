@@ -18,15 +18,6 @@ PRIMARY KEY(aadhar_card_id)
 );
 
 
--- mapping a dairy farmer to their aadhar card
-CREATE TABLE Dairy_Farmer_Possesses(
-farmer_identification_id CHAR(6),
-aadhar_card_id CHAR(12) NOT NULL, -- every farmer must have a registered aadhar card, therefore NOT NULL
-PRIMARY KEY(farmer_identification_id)
-,FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
-);
-
-
 -- table for Dairy Farmer (a dairy farmer account)
 CREATE TABLE Dairy_Farmer(
 farmer_identification_id CHAR(6),
@@ -35,6 +26,17 @@ average_milk_quantity DECIMAL(14,2) DEFAULT 0,
 cattlefeed DECIMAL(14,2) DEFAULT 0,
 PRIMARY KEY(farmer_identification_id)
 );
+
+-- mapping a dairy farmer to their aadhar card
+CREATE TABLE Dairy_Farmer_Possesses(
+farmer_identification_id CHAR(6),
+aadhar_card_id CHAR(12) NOT NULL, -- every farmer must have a registered aadhar card, therefore NOT NULL
+FOREIGN KEY(farmer_identification_id) REFERENCES Dairy_Farmer(farmer_identification_id)
+,FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
+);
+
+
+
 
 
 
@@ -124,7 +126,7 @@ FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 CREATE TABLE VDCS_Works_Under_DMU(
 vdcs_code CHAR(6), 
 district_code CHAR(6) NOT NULL, -- every village must work under some DMU, therefore NOT NULL
-PRIMARY KEY(vdcs_code),
+FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code),
 FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
@@ -132,7 +134,7 @@ FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 CREATE TABLE Part_Of(
 vdcsl_id CHAR(6), 
 district_code CHAR(6) NOT NULL, -- every VDCSL must be a part of some DMU, therefore NOT NULL
-PRIMARY KEY(vdcsl_id),
+FOREIGN KEY(vdcsl_id) REFERENCES VDCS_L(vdcsl_id),
 FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 );
 
@@ -141,7 +143,7 @@ FOREIGN KEY(district_code) REFERENCES DMU(district_code)
 CREATE TABLE Works_Here(
 vahp_id CHAR(6),
 vdcs_code CHAR(6),
-PRIMARY KEY(vahp_id),
+FOREIGN KEY(vahp_id) REFERENCES VAHP(vah_id),
 FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
 );
 
@@ -150,7 +152,7 @@ FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
 CREATE TABLE VAHP_Possesses(
 vahp_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- every vet and animal husbandry personnel must have a registered aadhar card, therefore NOT NULL
-PRIMARY KEY(vahp_id),
+FOREIGN KEY(vahp_id) REFERENCES VAHP(vah_id),
 FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
@@ -159,7 +161,7 @@ FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 CREATE TABLE PW_Possesses(
 pw_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- every processing worker must have a registered aadhar card, therefore NOT NULL
-PRIMARY KEY(pw_id),
+FOREIGN KEY(pw_id) REFERENCES PW(pw_id),
 FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
@@ -168,7 +170,7 @@ FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 CREATE TABLE DF_Works_Under_VDCS(
 farmer_identification_id CHAR(6),
 vdcs_code CHAR(6) NOT NULL, -- every farmer must belong to a vdcs, therefore NOT NULL
-PRIMARY KEY(farmer_identification_id),
+FOREIGN KEY(farmer_identification_id) REFERENCES Dairy_Farmer(farmer_identification_id),
 FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
 );
 
@@ -176,7 +178,7 @@ FOREIGN KEY(vdcs_code) REFERENCES VDCS(vdcs_code)
 CREATE TABLE Elects(
 farmer_identification_id CHAR(6),
 vdcsl_id CHAR(6), -- a farmer can choose not to vote for a representative, therefore NULL is allowed
-PRIMARY KEY(farmer_identification_id)
+FOREIGN KEY(farmer_identification_id) REFERENCES Dairy_Farmer(farmer_identification_id)
 ,FOREIGN KEY(vdcsl_id) REFERENCES VDCS_L(vdcsl_id)
 );
 
@@ -185,7 +187,7 @@ PRIMARY KEY(farmer_identification_id)
 CREATE TABLE VDCSL_Possesses(
 vdcsl_id CHAR(6),
 aadhar_card_id CHAR(12) NOT NULL, -- every farmer must have a registered aadhar card, therefore NOT NULL
-PRIMARY KEY(vdcsl_id)
+FOREIGN KEY(vdcsl_id) REFERENCES VDCS_L(vdcsl_id)
 ,FOREIGN KEY(aadhar_card_id) REFERENCES AADHAR_CARD(aadhar_card_id)
 );
 
@@ -220,7 +222,7 @@ FOREIGN KEY(district_code) REFERENCEs DMU(district_code)
 CREATE TABLE DMU_Works_Under_SMF(
 district_code CHAR(6), 
 state_code CHAR(6) NOT NULL, -- every DMU must work under an SMF, therefore NOT NULL
-PRIMARY KEY(district_code),
+FOREIGN KEY(district_code) REFERENCES DMU(district_code),
 FOREIGN KEY(state_code) REFERENCES SMF(state_code)
 );
 
@@ -228,6 +230,6 @@ FOREIGN KEY(state_code) REFERENCES SMF(state_code)
 CREATE TABLE Sells(
 batch_id CHAR(10), 
 state_code CHAR(6),
-PRIMARY KEY(batch_id),
+FOREIGN KEY(batch_id) REFERENCES Batch(batch_id),
 FOREIGN KEY(state_code) REFERENCES SMF(state_code)
 );
