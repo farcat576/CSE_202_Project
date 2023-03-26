@@ -137,7 +137,11 @@ def trigger1():
 
     query = """INSERT INTO DMU_Transaction (t_id, district_code, vdcs_code, amount_sent) VALUES (%s, %s, %s, %s)"""
     values = (new_transaction_id, dmu_chosen, vdcs_chosen, amount_sent)
-    mycursor.execute(query, values)
+    try:
+        mycursor.execute(query, values)
+    except:
+        print("Error in inserting data.")
+        
     mydb.commit()
 
     # print how many rows were affected
