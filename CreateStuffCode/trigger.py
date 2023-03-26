@@ -163,12 +163,12 @@ def trigger2():
 
     dairy_delete = input("Enter the id of the dairy farmer to be deleted: ")
     while(dairy_delete not in dairy_id_list):
-        print("Invalid amount. Please enter a valid amount.")
+        print("Invalid ID. Please enter a valid ID.")
         dairy_delete = input("Enter the id of the dairy farmer to be deleted: ")
     print()
 
     query = """DELETE FROM Dairy_Farmer WHERE farmer_identification_id=%s"""
-    mycursor.execute(query, dairy_delete)
+    mycursor.execute(query, (dairy_delete,))
     mydb.commit()
 
     # print how many rows were affected
