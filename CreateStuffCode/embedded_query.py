@@ -50,27 +50,28 @@ def select_SMF():
 
 
 def SMF_details(smf_chosen):
+    flag = 0
+    while(flag!= 1):
+        query = """SELECT * FROM SMF
+                                 WHERE state_code = '{SMF}'""".format(SMF = smf_chosen)
+        mycursor.execute(query)
+        smf_chosen_data = mycursor.fetchall()
+        print("SMF chosen: ", smf_chosen_data[0][1], sep="")
+        print("------------------------------------------------------------")
+        print("|Code|\t\t|Name|\t\t|Sold|\t\t|Cost|")
+        print("------------------------------------------------------------")
+        print(smf_chosen_data[0][0], "\t", smf_chosen_data[0][1], "\t", smf_chosen_data[0][2], "\t", smf_chosen_data[0][3])
+        print()
+        print()
 
-    query = """SELECT * FROM SMF
-                             WHERE state_code = '{SMF}'""".format(SMF = smf_chosen)
-    mycursor.execute(query)
-    smf_chosen_data = mycursor.fetchall()
-    print("SMF chosen: ", smf_chosen_data[0][1], sep="")
-    print("------------------------------------------------------------")
-    print("|Code|\t\t|Name|\t\t|Sold|\t\t|Cost|")
-    print("------------------------------------------------------------")
-    print(smf_chosen_data[0][0], "\t", smf_chosen_data[0][1], "\t", smf_chosen_data[0][2], "\t", smf_chosen_data[0][3])
-    print()
-    print()
-
-    dmu_data = display_DMUs(smf_chosen_data[0][0])
-    dmu_list = [i[0] for i in dmu_data]
-    dmuin = select_DMU(dmu_list)
-    if(dmuin == len(dmu_list) + 1):
-        pass
-    else:
-        dmu_chosen = dmu_list[dmuin - 1]
-        DMU_details(dmuin, dmu_chosen, dmu_data)
+        dmu_data = display_DMUs(smf_chosen_data[0][0])
+        dmu_list = [i[0] for i in dmu_data]
+        dmuin = select_DMU(dmu_list)
+        if(dmuin == len(dmu_list) + 1):
+            flag = 1
+        else:
+            dmu_chosen = dmu_list[dmuin - 1]
+            DMU_details(dmuin, dmu_chosen, dmu_data)
 
     return
 
@@ -86,6 +87,7 @@ def display_DMUs(smf_chosen):
     dmu_data = mycursor.fetchall()
 
     return dmu_data
+
 
 def select_DMU(dmu_list):
     print("Choose a DMU:")
@@ -123,6 +125,8 @@ def DMU_details(dmuin,dmu_chosen,dmu_data):
         else:
             vdcs_chosen = vdcs_list[vdcsin - 1]
             VDCS_details(vdcsin, vdcs_chosen, vdcs_data)
+
+    return
 
 
 
@@ -175,6 +179,8 @@ def VDCS_details(vdcsin,vdcs_chosen,vdcs_data):
             dairy_farmer_chosen = dairy_farmer_list[dairy_farmerin - 1]
             Dairy_Farmer_details(dairy_farmerin, dairy_farmer_chosen, dairy_farmer_data)
 
+    return
+
 
 
 
@@ -207,7 +213,7 @@ def select_Dairy_Farmer(dairy_farmer_list):
 def Dairy_Farmer_details(dairy_farmerin,dairy_farmer_chosen,dairy_farmer_data):
     print("Dairy Farmer chosen: ", dairy_farmer_chosen, sep="")
     print("------------------------------------------------------------")
-    print("|DF Code|\t|Milk Quantity|\t|Milk Price|\t|Village Name|")
+    print("|DF Code|\t|Milk Quantity|\t|Avg Milk Qty|\t|Cattle Feed|")
     print("------------------------------------------------------------")
     print(dairy_farmer_data[dairy_farmerin - 1][0], "\t\t", dairy_farmer_data[dairy_farmerin - 1][1], "\t\t\t",
           dairy_farmer_data[dairy_farmerin - 1][2], "\t\t\t", dairy_farmer_data[dairy_farmerin - 1][3])
@@ -238,6 +244,7 @@ def select_which_embedded_query():
             seetry()
         else:
             flag = 1
+
 
 
 
