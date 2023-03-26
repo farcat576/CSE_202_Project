@@ -129,7 +129,7 @@ def trigger1():
             money_available = i[2]
 
     amount_sent = float(input("Enter the amount to be sent: "))
-    while(amount_sent > 999999999999.99 or amount_sent < 0):
+    while(amount_sent > 999999999999.99 or amount_sent <= 0):
         print("Invalid amount. Please enter a valid amount.")
         amount_sent = float(input("Enter the amount to be sent: "))
     print()
