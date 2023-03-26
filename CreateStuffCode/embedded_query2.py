@@ -15,7 +15,7 @@ def seetry():
         print("Exiting...")
         exit()
 
-    print("Connected to the database.")
+    #print("Connected to the database.")
     mycursor = mydb.cursor()
 
 
@@ -43,7 +43,8 @@ def seetry():
         print("No data to insert.")
         mydb.close()
         print("Exiting...")
-        exit()
+        print()
+        return
 
     # take input from the user
     for i in range(n):
@@ -97,25 +98,4 @@ def seetry():
 
 
 
-
-
-
-
-
-# mycursor.execute("SELECT * FROM Dairy_Farmer")
-#
-# for i in mycursor:
-#     print(i)
-#
-# # insert ('FIC300', Decimal('50.00'), Decimal('30.00'), Decimal('0.00')) into the Dairy_Farmer table
-# sql = """INSERT INTO Dairy_Farmer (farmer_identification_id, milk_quantity, average_milk_quantity, cattlefeed)
-#         VALUES ("FIC300", 50.00, 30.00, 0.00)"""
-#
-# # write a parameterized query instead of hard-coded query
-# sql = "INSERT INTO Dairy_Farmer (farmer_identification_id, milk_quantity, average_milk_quantity, cattlefeed) VALUES (%s, %s, %s, %s)"
-# values = ("FIC301", 50.00, 30.00, 0.00)
-#
-# # execute the query
-# mycursor.execute(sql, values)
-#
 
