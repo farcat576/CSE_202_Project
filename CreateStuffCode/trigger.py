@@ -150,7 +150,26 @@ def trigger1():
 
 
 def trigger2():
-    pass
+    # store all the data from the Dairy_Farmer table in a list
+    mycursor.execute("SELECT * FROM Dairy_Farmer")
+    dairy_data = mycursor.fetchall()
+
+    # Extract the farmer id from the list and store it in a list
+    dairy_id_list = [i[0] for i in dairy_data]
+
+    dairy_delete = input("Enter the id of the dairy farmer to be deleted: ")
+    while(dairy_delete not in dairy_id_list):
+        print("Invalid amount. Please enter a valid amount.")
+        dairy_delete = input("Enter the id of the dairy farmer to be deleted: ")
+    print()
+
+    query = """DELETE FROM Dairy_Farmer WHERE farmer_identification_id=%s"""
+    mycursor.execute(query, dairy_delete)
+    mydb.commit()
+
+    # print how many rows were affected
+    print(mycursor.rowcount, "record(s) after deleteion.")
+    print()
 
 
 
