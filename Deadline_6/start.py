@@ -93,6 +93,78 @@ def select_DF(mycursor):
     return df_chosen
 
 
+def start_SMF(data,mycursor):
+    query = """SELECT * FROM SMF
+                                 WHERE state_code = '{SMF}'""".format(SMF = data)
+    mycursor.execute(query)
+    smf_chosen_data = mycursor.fetchall()
+    print("SMF chosen: ", smf_chosen_data[0][1], sep="")
+    print("------------------------------------------------------------")
+    print("|Code|\t\t|Name|\t\t|Sold|\t\t|Cost|")
+    print("------------------------------------------------------------")
+    print(smf_chosen_data[0][0], "\t", smf_chosen_data[0][1], "\t", smf_chosen_data[0][2], "\t", smf_chosen_data[0][3])
+    print()
+    print()
+    """Display DMU/VDCS/DF
+    Add DMU/VDCS/DF
+    Delete DMU/VDCS/DF
+    Modify SMF/DMU/VDCS/DF
+    Run Transactions"""
+
+
+def start_DMU(data,mycursor):
+    query = """SELECT * FROM DMU
+                     WHERE district_code = '{DMU}'""".format(DMU = data)
+    mycursor.execute(query)
+    dmu_data = mycursor.fetchall()
+    print("DMU chosen: ", dmu_data[0][1], sep="")
+    print("--------------------------------------------------------------")
+    print("|Code|\t\t|Name|\t|Money|\t\t|Batch_Counter|\t|State Code|")
+    print("--------------------------------------------------------------")
+    print(dmu_data[0][0], "\t\t", dmu_data[0][1], "\t", dmu_data[0][2], "\t\t",
+          dmu_data[0][3], "\t\t\t", dmu_data[0][0][:3])
+    print()
+    print()
+    """Display VDCS/DF
+    Add VDCS/DF
+    Delete VDCS/DF
+    Modify DMU/VDCS/DF"""
+
+def start_VDCS(data,mycursor):
+    query = """SELECT * FROM VDCS
+                        WHERE vdcs_code = '{VDCS}'""".format(VDCS = data)
+    mycursor.execute(query)
+    vdcs_data = mycursor.fetchall()
+    print("VDCS chosen: ", vdcs_data[0][4], sep="")
+    print("----------------------------------------------------------------------------------")
+    print("|VDCS Code|\t |Cattlefeed|\t |Money|\t\t|Milk Quantity|\t\t |Village Name|")
+    print("----------------------------------------------------------------------------------")
+    print(vdcs_data[0][0], "\t\t\t", vdcs_data[0][1], "\t\t\t", vdcs_data[0][2], "\t\t\t",
+          vdcs_data[0][3], "\t\t\t", vdcs_data[0][4])
+    print()
+    print()
+    """Display DF
+    Add DF
+    Delete DF
+    Modify VDCS/DF"""
+
+
+def start_DF(data,mycursor):
+    query = """SELECT * FROM Dairy_Farmer
+                        WHERE farmer_identification_id = '{F_id}'""".format(F_id = data)
+    mycursor.execute(query)
+    dairy_farmer_data = mycursor.fetchall()
+    print("Dairy Farmer chosen: ", dairy_farmer_data[0][0], sep="")
+    print("------------------------------------------------------------")
+    print("|DF Code|\t|Milk Quantity|\t|Avg Milk Qty|\t|Cattle Feed|")
+    print("------------------------------------------------------------")
+    print(dairy_farmer_data[0][0], "\t\t", dairy_farmer_data[0][1], "\t\t\t",
+          dairy_farmer_data[0][2], "\t\t\t", dairy_farmer_data[0][3])
+    print()
+    print()
+    """Modify DF"""
+
+
 def select_account(mycursor):
     flag = 0
     while(flag != 1):
