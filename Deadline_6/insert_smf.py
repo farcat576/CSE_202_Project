@@ -1,5 +1,10 @@
+import mysql.connector
+
+from check_float import *
+
+
 def smf_seetry():
-    import mysql.connector
+
 
 
     # connect to the database
@@ -7,11 +12,11 @@ def smf_seetry():
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
-            passwd="farhan",
+            passwd="mysqlconnector10!!",
             database="All_Levels"
         )
     except:
-        print("Connection failed.")
+        print("Connection failedQ!@DASF.")
         print("Exiting...")
         exit()
 
