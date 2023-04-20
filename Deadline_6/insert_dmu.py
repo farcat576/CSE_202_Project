@@ -53,7 +53,7 @@ def dmu_seetry():
         print("DMU", i+1, ":")
         dmu_id=""
         smf_id=""
-        while(true):
+        while(True):
             while(len(dmu_id)!=6):
                 dmu_id = input("Enter DMU identification id (Enter 6 digit code): ")
             while(len(smf_id)!=3):
@@ -64,7 +64,7 @@ def dmu_seetry():
                 print("DMU id does not match with SMF id. Please enter a different DMU identification id.")
         while(dmu_id in dmu_id_list):
             print("DMU id already exists. Please enter a different DMU identification id.")
-            while(true):
+            while(True):
                 while(len(dmu_id)!=6):
                     dmu_id = input("Enter DMU identification id (Enter 6 digit code): ")
                 while(len(smf_id)!=3):
@@ -88,7 +88,7 @@ def dmu_seetry():
             id_count = int(input("Enter batch id counter: "))
 
         # append the values to the list
-        values.append((dmu_id, dmu_name,smf_id,money,id_count))
+        values.append((dmu_id, dmu_name,money,id_count))
         print()
 
 
