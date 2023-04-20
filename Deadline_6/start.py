@@ -1,8 +1,11 @@
 import mysql.connector
-from insert_df import df_seetry
-from insert_smf import smf_seetry
-from insert_dmu import dmu_seetry
-from insert_vdcs import vdcs_seetry
+from insert_df import *
+from insert_vdcs import *
+from insert_dmu import *
+from insert_smf import *
+from check_float import *
+
+
 
 
 def select_SMF(mycursor):
@@ -90,10 +93,11 @@ def select_DF(mycursor):
         df_chosen = df_list[dfin - 1]
     else:
         df_chosen=None
+
     return df_chosen
 
 
-def start_SMF(data,mycursor):
+def start_SMF(data,mycursor,mydb):
     query = """SELECT * FROM SMF
                                  WHERE state_code = '{SMF}'""".format(SMF = data)
     mycursor.execute(query)
@@ -112,7 +116,7 @@ def start_SMF(data,mycursor):
     Run Transactions"""
 
 
-def start_DMU(data,mycursor):
+def start_DMU(data,mycursor,mydb):
     query = """SELECT * FROM DMU
                      WHERE district_code = '{DMU}'""".format(DMU = data)
     mycursor.execute(query)
@@ -125,12 +129,60 @@ def start_DMU(data,mycursor):
           dmu_data[0][3], "\t\t\t", dmu_data[0][0][:3])
     print()
     print()
+
+    option = 0
+    while (option != 10):
+        print("Choose an option:")
+        print("1. Display VDCS")
+        print("2. Add VDCS")
+        print("3. Delete VDCS")
+        print("4. Modify VDCS")
+        print("5. Edit DF")
+        print("6. Modify DMU")
+        print("7. Back")
+        print()
+        option = int(input("Enter your choice: "))
+        while (option > 7 or option < 1):
+            print("Invalid option. Please enter a valid option.")
+            option = int(input("Enter your choice: "))
+        if (option == 1):
+            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
+            if(vdcs_chosen!=None):
+                display_VDCS(vdcs_chosen,mycursor)
+
+        elif (option == 2):
+            pass
+            insert_VDCS(data,mycursor,mydb)
+        elif (option == 3):
+            pass
+        #    delete_VDCS(data,mycursor,mydb)
+
+        elif (option == 4):
+            pass
+            modify_VDCS(data,mycursor,mydb)
+
+        elif (option == 5):
+            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
+            if(vdcs_chosen!=None):
+                start_VDCS(vdcs_chosen,mycursor,mydb)
+
+        elif (option == 6):
+            pass
+        #    modify_DMU(data,mycursor,mydb)
+
+        elif (option == 7):
+            break
+
+    print()
+    print()
+
+
     """Display VDCS/DF
     Add VDCS/DF
     Delete VDCS/DF
     Modify DMU/VDCS/DF"""
 
-def start_VDCS(data,mycursor):
+def start_VDCS(data,mycursor,mydb):
     query = """SELECT * FROM VDCS
                         WHERE vdcs_code = '{VDCS}'""".format(VDCS = data)
     mycursor.execute(query)
@@ -143,13 +195,59 @@ def start_VDCS(data,mycursor):
           vdcs_data[0][3], "\t\t\t", vdcs_data[0][4])
     print()
     print()
+
+    option = 0
+
+    while (option != 6):
+        print("Choose an option:")
+        print("1. Display DF")
+        print("2. Add DF")
+        print("3. Delete DF")
+        print("4. Modify DF")
+        print("5. Modify VDCS")
+        print("6. Back")
+        print()
+        option = int(input("Enter your choice: "))
+        while (option > 6 or option < 1):
+            print("Invalid option. Please enter a valid option.")
+            option = int(input("Enter your choice: "))
+        if (option == 6):
+            break
+        elif (option == 1):
+            df_chosen = select_DF_In_VDCS(data,mycursor)
+            if(df_chosen!=None):
+                display_DF(df_chosen,mycursor)
+
+        elif (option == 2):
+            insert_DF(data,vdcs_data[0][4],mycursor,mydb)
+
+        elif (option == 3):
+            df_chosen = select_DF_In_VDCS(data,mycursor)
+            if(df_chosen!=None):
+                delete_DF(df_chosen,mycursor,mydb)
+
+
+        elif (option == 4):
+            df_chosen = select_DF_In_VDCS(data,mycursor)
+            if(df_chosen!=None):
+                modify_df(df_chosen,mycursor,mydb)
+
+        elif (option == 5):
+            vdcs_chosen = data
+            if(vdcs_chosen!=None):
+                modify_VDCS(vdcs_chosen,mycursor,mydb)
+
+        else:
+            print("Invalid option. Please enter a valid option.")
+
     """Display DF
     Add DF
     Delete DF
     Modify VDCS/DF"""
 
 
-def start_DF(data,mycursor):
+def start_DF(data,mycursor,mydb):
+    df_chosen = data
     query = """SELECT * FROM Dairy_Farmer
                         WHERE farmer_identification_id = '{F_id}'""".format(F_id = data)
     mycursor.execute(query)
@@ -162,6 +260,23 @@ def start_DF(data,mycursor):
           dairy_farmer_data[0][2], "\t\t\t", dairy_farmer_data[0][3])
     print()
     print()
+    option = 0
+    while(option!=3):
+        print()
+        print("1. Modify details")
+        print("2. View Aadhar Details")
+        print("3. Back")
+        option = int(input("Enter your choice: "))
+        while (option > 3 or option < 1):
+            print("Invalid choice. Please enter a valid choice.")
+            option = int(input("Enter your choice: "))
+        if(option==1):
+            modify_df(df_chosen,mycursor,mydb)
+        elif(option==2):
+            view_aadhar_details(df_chosen,mycursor)
+        else:
+            break
+
     """Modify DF"""
 
 
@@ -215,7 +330,7 @@ if __name__ == "__main__":
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
-            passwd="farhan",
+            passwd="mysqlconnector10!!",
             database="All_Levels"
         )
         print("Connected to the database.")
@@ -223,16 +338,17 @@ if __name__ == "__main__":
         mycursor = mydb.cursor()
         type=5
         while(type==5):
-            type,data=select_account(mycursor) 
+            type,data=select_account(mycursor)
             if(type==1):
-                start_SMF(data,mycursor)
+                start_SMF(data,mycursor,mydb)
             elif(type==2):
-                start_DMU(data,mycursor)
+                start_DMU(data,mycursor,mydb)
             elif(type==3):
-                start_VDCS(data,mycursor)
+                start_VDCS(data,mycursor,mydb)
             elif(type==4):
-                start_DF(data,mycursor)
-        #close the connection  
+                start_DF(data,mycursor,mydb)
+        #close the connection
+        mydb.commit()
         mydb.close()
     except:
         print("Connection failed.")
@@ -240,5 +356,4 @@ if __name__ == "__main__":
         exit()
 
     print("Thank you for using the system. Have a nice day!")
-
 
