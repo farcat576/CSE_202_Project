@@ -1,13 +1,21 @@
-def dmu_seetry():
-    import mysql.connector
+import mysql.connector
+from check_float import *
 
+
+def check_float_range(num):
+    if(num > 999999999999.99 or num < 0):
+        return False
+    return True
+
+
+def dmu_seetry():
 
     # connect to the database
     try:
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
-            passwd="farhan",
+            passwd="mysqlconnector10!!",
             database="All_Levels"
         )
     except:
@@ -108,3 +116,17 @@ def dmu_seetry():
 
 # close the connection
     mydb.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
