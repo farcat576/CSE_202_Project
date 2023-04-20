@@ -53,7 +53,7 @@ def vdcs_seetry():
         print("VDCS", i+1, ":")
         vdcs_id=""
         district_id=""
-        while(true):
+        while(True):
             while(len(vdcs_id)!=6):
                 vdcs_id = input("Enter VDCS identification id (Enter 6 digit code): ")
             while(len(district_id)!=6):
@@ -64,7 +64,7 @@ def vdcs_seetry():
                 print("VDCS id does not match with DMU id. Please enter a different VDCS identification id.")
         while(vdcs_id in vdcs_id_list):
             print("VDCS id already exists. Please enter a different VDCS identification id.")
-            while(true):
+            while(True):
                 while(len(vdcs_id)!=6):
                     vdcs_id = input("Enter VDCS identification id (Enter 6 digit code): ")
                 while(len(district_id)!=6):
