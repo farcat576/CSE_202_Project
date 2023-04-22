@@ -136,11 +136,11 @@ def display_VDCS(vdcs_code, cursor):
 
 
 
-def select_VDCS_In_DMU(vdcs_chosen, cursor):
+def select_VDCS_In_DMU(dmu_chosen, cursor):
     mycursor = cursor
     query = """SELECT * FROM VDCS
                         NATURAL JOIN VDCS_Works_Under_DMU
-                        WHERE VDCS_Works_Under_DMU.district_code = '{VDCS}'""".format(VDCS = vdcs_chosen)
+                        WHERE VDCS_Works_Under_DMU.district_code = '{DMU}'""".format(DMU = dmu_chosen)
 
 
     mycursor.execute(query)
@@ -158,7 +158,7 @@ def select_VDCS_In_DMU(vdcs_chosen, cursor):
     print(count, ". ", "Back", sep="")
     dfin = int(input("Enter your choice: "))
     while (dfin > len(vdcs_data)+1 or dfin < 1):
-        print("Invalid Dairy Farmer. Please enter a valid Dairy Farmer.")
+        print("Invalid VDCS. Please enter a valid Dairy Farmer.")
         dfin = int(input("Enter your choice: "))
     if(dfin!=len(vdcs_data)+1):
         vdcs_chosen = vdcs_data[dfin - 1][0]
@@ -166,3 +166,10 @@ def select_VDCS_In_DMU(vdcs_chosen, cursor):
         vdcs_chosen=None
 
     return vdcs_chosen
+
+def delete_VDCS(vdcs_id, mycursor, mydb):
+    sql = "DELETE FROM VDCS WHERE vdcs_code = '{fid}'".format(fid=vdcs_id)
+    mycursor.execute(sql)
+    print(mycursor.rowcount, "record(s) deleted.")
+
+    mydb.commit()
