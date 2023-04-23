@@ -23,7 +23,8 @@ def insert_VDCS(dmu_code,cursor, mydb):
     print()
 
     # create a list of strings to store the values to be inserted into the table
-    values = []
+    vdcs_values = []
+    vdcs_works_under_dmu_values = []
 
     if (n == 0):
         print("No data to insert.")
@@ -42,18 +43,19 @@ def insert_VDCS(dmu_code,cursor, mydb):
             vdcs_id = input("Enter VDCS ID (3 letters): ")
             vdcs_id = dmu_code[3:] + vdcs_id.upper()
 
+        vdcs_id_list.append(vdcs_id)  # to prevent inserting duplicate values by the user
 
         money = float(input("Enter money present: "))
         while (check_float_range(money) == False):
             print("Invalid money value.")
             money = float(input("Enter money present: "))
 
-        cattle = int(input("Enter cattlefeed amount: "))
+        cattle = float(input("Enter cattlefeed amount: "))
         while (check_float_range(cattle) == False):
             print("Invalid cattlefeed value.")
             cattle = int(input("Enter cattlefeed amount: "))
 
-        milk_quantity = int(input("Enter milk quantity: "))
+        milk_quantity = float(input("Enter milk quantity: "))
         while (check_float_range(milk_quantity) == False):
             print("Invalid milk quantity. Please enter a valid number (between 0 and 999999999999).")
             milk_quantity = int(input("Enter milk quantity: "))
@@ -65,19 +67,24 @@ def insert_VDCS(dmu_code,cursor, mydb):
 
 
         # append the values to the list
-        values.append((vdcs_id, cattle, money, milk_quantity, vdcs_name))
+        vdcs_values.append((vdcs_id, cattle, money, milk_quantity, vdcs_name))
+        vdcs_works_under_dmu_values.append((vdcs_id, dmu_code))
         print()
 
-    sql = "INSERT INTO VDCS VALUES (%s, %s, %s, %s, %s)"
-    mycursor.executemany(sql, values)
+    sql_insert_vdcs = "INSERT INTO VDCS VALUES (%s, %s, %s, %s, %s)"
+    mycursor.executemany(sql_insert_vdcs, vdcs_values)
 
-    mydb.commit()
 
-    print(mycursor.rowcount, "record(s) inserted.")
+    print(mycursor.rowcount, "record(s) inserted in vdcs table.")
     print()
 
+    sql_insert_vdcs_works_under_dmu = "INSERT INTO VDCS_Works_Under_DMU VALUES (%s, %s)"
+    mycursor.executemany(sql_insert_vdcs_works_under_dmu, vdcs_works_under_dmu_values)
 
+    print(mycursor.rowcount, "record(s) inserted in vdcs_works_under_dmu table.")
+    print()
 
+    mydb.commit()
 
 
 
@@ -126,15 +133,48 @@ def display_VDCS(vdcs_code, cursor):
 
     print()
     print("VDCS chosen: ", vdcs_code, sep="")
-    print("------------------------------------------------------------")
+    print("-------------------------------------------------------------------------------------")
     print("|VDCS Code|\t|Cattle Feed|\t|Money|\t|Milk Quantity|\t|Village Name|")
-    print("------------------------------------------------------------")
+    print("-------------------------------------------------------------------------------------")
     print(vdcs_data[0][0], "\t\t", vdcs_data[0][1], "\t\t", vdcs_data[0][2], "\t\t", vdcs_data[0][3], "\t\t", vdcs_data[0][4], sep="")
 
     print()
     print()
 
+def delete_VDCS(vdcs_code, cursor, mydb):
+    mycursor = cursor
+    get_df_code_sql = "SELECT farmer_identification_id FROM DF_Works_Under_VDCS WHERE vdcs_code = '{vdcs_coder}'".format(vdcs_coder=vdcs_code)
+    mycursor.execute(get_df_code_sql)
+    df_codes = mycursor.fetchall()
+    print(df_codes)
 
+    get_aadhar_sql = "SELECT aadhar_card_id FROM Dairy_Farmer_Possesses WHERE farmer_identification_id = '{df_coder}'"
+    # print("Deleting Aadhar Cards")
+    for df_code in df_codes:
+        mycursor.execute(get_aadhar_sql.format(df_coder=df_code[0]))
+        aadhar_card_id = mycursor.fetchall()[0][0]
+        print(aadhar_card_id)
+        delete_aa_sql = "DELETE FROM AADHAR_CARD WHERE aadhar_card_id = '{aadhar_number}'".format(aadhar_number=aadhar_card_id)
+        mycursor.execute(delete_aa_sql)
+
+
+    delete_df_sql = "DELETE FROM Dairy_Farmer WHERE farmer_identification_id = '{df_code}'"
+    count = 0
+    for df_code in df_codes:
+        mycursor.execute(delete_df_sql.format(df_code=df_code[0]))
+        count += mycursor.rowcount
+
+    # print(count, "record(s) deleted from.")
+    # print()
+
+
+    sql = "DELETE FROM VDCS WHERE vdcs_code = '{vdcs_code}'".format(vdcs_code=vdcs_code)
+    mycursor.execute(sql)
+
+    print(mycursor.rowcount, "record(s) deleted.")
+    print()
+
+    mydb.commit()
 
 def select_VDCS_In_DMU(dmu_chosen, cursor):
     mycursor = cursor
@@ -156,20 +196,13 @@ def select_VDCS_In_DMU(dmu_chosen, cursor):
         print(count, ". ", i[0], sep="")
         count += 1
     print(count, ". ", "Back", sep="")
-    dfin = int(input("Enter your choice: "))
-    while (dfin > len(vdcs_data)+1 or dfin < 1):
-        print("Invalid VDCS. Please enter a valid Dairy Farmer.")
-        dfin = int(input("Enter your choice: "))
-    if(dfin!=len(vdcs_data)+1):
-        vdcs_chosen = vdcs_data[dfin - 1][0]
+    vdcsin = int(input("Enter your choice: "))
+    while (vdcsin > len(vdcs_data)+1 or vdcsin < 1):
+        print("Invalid Dairy Farmer. Please enter a valid Dairy Farmer.")
+        vdcsin = int(input("Enter your choice: "))
+    if(vdcsin!=len(vdcs_data)+1):
+        vdcs_chosen = vdcs_data[vdcsin - 1][0]
     else:
         vdcs_chosen=None
 
     return vdcs_chosen
-
-def delete_VDCS(vdcs_id, mycursor, mydb):
-    sql = "DELETE FROM VDCS WHERE vdcs_code = '{fid}'".format(fid=vdcs_id)
-    mycursor.execute(sql)
-    print(mycursor.rowcount, "record(s) deleted.")
-
-    mydb.commit()
