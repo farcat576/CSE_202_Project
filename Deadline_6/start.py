@@ -6,7 +6,7 @@ from insert_smf import *
 from check_float import *
 
 
-    
+
 
 def select_SMF(mycursor):
     query = """SELECT * FROM SMF"""
@@ -102,18 +102,16 @@ def start_SMF(data,mycursor,mydb):
                                  WHERE state_code = '{SMF}'""".format(SMF = data)
     mycursor.execute(query)
     smf_chosen_data = mycursor.fetchall()
+    print("SMF chosen: ", smf_chosen_data[0][1], sep="")
+    print("------------------------------------------------------------")
+    print("|Code|\t\t|Name|\t\t|Sold|\t\t|Cost|")
+    print("------------------------------------------------------------")
+    print(smf_chosen_data[0][0], "\t", smf_chosen_data[0][1], "\t", smf_chosen_data[0][2], "\t", smf_chosen_data[0][3])
+    print()
+    print()
 
     option = 0
-    while (option != 15):
-        print("SMF chosen: ", smf_chosen_data[0][1], sep="")
-        print("------------------------------------------------------------")
-        print("|Code|\t\t|Name|\t\t|Sold|\t\t|Cost|")
-        print("------------------------------------------------------------")
-        print(smf_chosen_data[0][0], "\t", smf_chosen_data[0][1], "\t", smf_chosen_data[0][2], "\t", smf_chosen_data[0][3])
-        print()
-        print()
-
-        print("Choose an option:")
+    while (option != 10):
         print("1. Display DMU")
         print("2. Add DMU")
         print("3. Delete DMU")
@@ -134,92 +132,105 @@ def start_SMF(data,mycursor,mydb):
         while (option > 15 or option < 1):
             print("Invalid option. Please enter a valid option.")
             option = int(input("Enter your choice: "))
+        print()
         if (option == 1):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
-            if(dmu_chosen!=None):
-                display_DMU(dmu_chosen,mycursor)
+            display_DMU(dmu_chosen, mycursor)
+
         elif (option == 2):
-            insert_DMU(data,mycursor,mydb)
+            insert_DMU(data,mycursor, mydb)
+
         elif (option == 3):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
-                delete_DMU(dmu_chosen,mycursor,mydb)
+                delete_DMU(dmu_chosen, mycursor, mydb)
 
         elif (option == 4):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
-                modify_DMU(data,mycursor,mydb)
+                modify_DMU(dmu_chosen, mycursor, mydb)
+
 
         elif (option == 5):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
                 vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    display_VDCS(vdcs_chosen,mycursor)
+                    display_VDCS(vdcs_chosen, mycursor)
+
 
         elif (option == 6):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
-                insert_VDCS(dmu_chosen,mycursor,mydb)
+                insert_VDCS(dmu_chosen,mycursor, mydb)
+
+
         elif (option == 7):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
                 vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    delete_VDCS(vdcs_chosen,mycursor,mydb)
+                    delete_VDCS(vdcs_chosen, mycursor, mydb)
+
 
         elif (option == 8):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
                 vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    modify_VDCS(vdcs_chosen,mycursor,mydb)
-        
+                    modify_VDCS(vdcs_chosen, mycursor, mydb)
+
         elif (option == 9):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
                 vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    display_DF(select_DF_In_VDCS(vdcs_chosen,mycursor),mycursor,mydb)
-        
+                    df_chosen = select_DF_In_VDCS(vdcs_chosen,mycursor)
+                    if(df_chosen!=None):
+                        display_DF(df_chosen, mycursor)
+
+
         elif (option == 10):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
-                vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
+                vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    query = """SELECT * FROM VDCS
-                        WHERE vdcs_code = '{VDCS}'""".format(VDCS = vdcs_chosen)
+                    query = """SELECT village_name FROM VDCS WHERE vdcs_code = '{VDCS}'""".format(VDCS = vdcs_chosen)
                     mycursor.execute(query)
-                    selected_data = mycursor.fetchall()
-                    insert_DF(vdcs_chosen,selected_data[0][4],mycursor,mydb)
-        
+                    village_name = mycursor.fetchall()
+                    # print(village_name)
+                    insert_DF(vdcs_chosen,village_name[0][0],mycursor, mydb)
+
         elif (option == 11):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
                 vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    delete_DF(select_DF_In_VDCS(vdcs_chosen,mycursor),mycursor,mydb)
+                    df_chosen = select_DF_In_VDCS(vdcs_chosen,mycursor)
+                    if(df_chosen!=None):
+                        delete_DF(df_chosen, mycursor, mydb)
 
         elif (option == 12):
             dmu_chosen = select_DMU_In_SMF(data,mycursor)
             if(dmu_chosen!=None):
                 vdcs_chosen = select_VDCS_In_DMU(dmu_chosen,mycursor)
                 if(vdcs_chosen!=None):
-                    modify_DF(select_DF_In_VDCS(vdcs_chosen,mycursor),mycursor,mydb)
+                    df_chosen = select_DF_In_VDCS(vdcs_chosen,mycursor)
+                    if(df_chosen!=None):
+                        modify_DF(df_chosen, mycursor, mydb)
+
 
         elif (option == 13):
+            modify_SMF(data,mycursor, mydb)
+
+        elif(option==14):
             pass
-        #    modify_SMF(data,mycursor,mydb)
-        
-        elif (option == 14):
-            pass
-        #   run_transaction
+            #run_transactions(data,mycursor,mydb)
 
         elif (option == 15):
             break
 
-    print()
-    print()
+
 
     """Display DMU/VDCS/DF
     Add DMU/VDCS/DF
@@ -233,19 +244,17 @@ def start_DMU(data,mycursor,mydb):
                      WHERE district_code = '{DMU}'""".format(DMU = data)
     mycursor.execute(query)
     dmu_data = mycursor.fetchall()
+    print("DMU chosen: ", dmu_data[0][1], sep="")
+    print("--------------------------------------------------------------")
+    print("|Code|\t\t|Name|\t|Money|\t\t|Batch_Counter|\t|State Code|")
+    print("--------------------------------------------------------------")
+    print(dmu_data[0][0], "\t\t", dmu_data[0][1], "\t", dmu_data[0][2], "\t\t",
+          dmu_data[0][3], "\t\t\t", dmu_data[0][0][:3])
+    print()
+    print()
 
     option = 0
     while (option != 10):
-        print("DMU chosen: ", dmu_data[0][1], sep="")
-        print("--------------------------------------------------------------")
-        print("|Code|\t\t|Name|\t|Money|\t\t|Batch_Counter|\t|State Code|")
-        print("--------------------------------------------------------------")
-        print(dmu_data[0][0], "\t\t", dmu_data[0][1], "\t", dmu_data[0][2], "\t\t",
-            dmu_data[0][3], "\t\t\t", dmu_data[0][0][:3])
-        print()
-        print()
-
-
         print("Choose an option:")
         print("1. Display VDCS")
         print("2. Add VDCS")
@@ -269,42 +278,45 @@ def start_DMU(data,mycursor,mydb):
 
         elif (option == 2):
             insert_VDCS(data,mycursor,mydb)
+
         elif (option == 3):
             vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
             if(vdcs_chosen!=None):
                 delete_VDCS(vdcs_chosen,mycursor,mydb)
 
         elif (option == 4):
-            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
-            if(vdcs_chosen!=None):
-                modify_VDCS(vdcs_chosen,mycursor,mydb)
-        
+            vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
+            if (vdcs_chosen != None):
+                modify_VDCS(vdcs_chosen, mycursor, mydb)
+
         elif (option == 5):
-            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
-            if(vdcs_chosen!=None):
-                display_DF(select_DF_In_VDCS(vdcs_chosen,mycursor),mycursor,mydb)
-        
+            vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
+            if (vdcs_chosen != None):
+                display_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor)
+
         elif (option == 6):
-            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
-            if(vdcs_chosen!=None):
-                query = """SELECT * FROM VDCS
-                     WHERE vdcs_code = '{VDCS}'""".format(VDCS = vdcs_chosen)
+            vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
+            if (vdcs_chosen != None):
+                query = """SELECT village_name FROM VDCS WHERE vdcs_code = '{VDCS}'""".format(VDCS=vdcs_chosen)
                 mycursor.execute(query)
-                selected_data = mycursor.fetchall()
-                insert_DF(vdcs_chosen,selected_data[0][4],mycursor,mydb)
-        
+                village_name = mycursor.fetchall()
+                # print(village_name)
+                insert_DF(vdcs_chosen, village_name[0][0], mycursor, mydb)
+
+
         elif (option == 7):
-            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
-            if(vdcs_chosen!=None):
-                delete_DF(select_DF_In_VDCS(vdcs_chosen,mycursor),mycursor,mydb)
+            vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
+            if (vdcs_chosen != None):
+                delete_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor, mydb)
+
 
         elif (option == 8):
-            vdcs_chosen = select_VDCS_In_DMU(data,mycursor)
-            if(vdcs_chosen!=None):
-                modify_DF(select_DF_In_VDCS(vdcs_chosen,mycursor),mycursor,mydb)
+            vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
+            if (vdcs_chosen != None):
+                modify_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor, mydb)
 
         elif (option == 9):
-            modify_DMU(data,mycursor,mydb)
+            modify_DMU(data, mycursor, mydb)
 
         elif (option == 10):
             break
@@ -323,19 +335,18 @@ def start_VDCS(data,mycursor,mydb):
                         WHERE vdcs_code = '{VDCS}'""".format(VDCS = data)
     mycursor.execute(query)
     vdcs_data = mycursor.fetchall()
+    print("VDCS chosen: ", vdcs_data[0][4], sep="")
+    print("----------------------------------------------------------------------------------")
+    print("|VDCS Code|\t |Cattlefeed|\t |Money|\t\t|Milk Quantity|\t\t |Village Name|")
+    print("----------------------------------------------------------------------------------")
+    print(vdcs_data[0][0], "\t\t\t", vdcs_data[0][1], "\t\t\t", vdcs_data[0][2], "\t\t\t",
+          vdcs_data[0][3], "\t\t\t", vdcs_data[0][4])
+    print()
+    print()
 
     option = 0
+
     while (option != 6):
-        print("VDCS chosen: ", vdcs_data[0][4], sep="")
-        print("----------------------------------------------------------------------------------")
-        print("|VDCS Code|\t |Cattlefeed|\t |Money|\t\t|Milk Quantity|\t\t |Village Name|")
-        print("----------------------------------------------------------------------------------")
-        print(vdcs_data[0][0], "\t\t\t", vdcs_data[0][1], "\t\t\t", vdcs_data[0][2], "\t\t\t",
-            vdcs_data[0][3], "\t\t\t", vdcs_data[0][4])
-        print()
-        print()
-
-
         print("Choose an option:")
         print("1. Display DF")
         print("2. Add DF")
@@ -484,6 +495,7 @@ if __name__ == "__main__":
                 start_VDCS(data,mycursor,mydb)
             elif(type==4):
                 start_DF(data,mycursor,mydb)
+
         #close the connection
         mydb.commit()
         mydb.close()
