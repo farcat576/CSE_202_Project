@@ -2,25 +2,16 @@ import mysql.connector
 from check_float import *
 
 
-def insert_DMU():
-    import mysql.connector
+def check_float_range(num):
+    if(num > 999999999999.99 or num < 0):
+        return False
+    return True
 
 
-    # connect to the database
-    try:
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="farhan",
-            database="All_Levels"
-        )
-    except:
-        print("Connection failed.")
-        print("Exiting...")
-        exit()
+def insert_DMU(smf_code, cursor, mydb):
 
-    #print("Connected to the database.")
-    mycursor = mydb.cursor()
+
+    mycursor = cursor
 
 
     # store all the data from the DMU table in a list
@@ -35,18 +26,17 @@ def insert_DMU():
 
     n = int(input("Enter number of DMUs to add (between 0 and 999): "))
     while(n > 999 or n < 0): # setting a limit of 999 rows to be inserted
-        print("Invalid number of DMUs. Please enter a valid number of Dairy Farmers (between 0 and 999).")
+        print("Invalid number of DMUs.")
         n = int(input("Enter number of DMUs to add: "))
     print()
 
     # create a list of strings to store the values to be inserted into the table
-    values = []
+    dmu_values = []
+    dmu_works_under_smf_values = []
 
 
     if(n==0):
         print("No data to insert.")
-        mydb.close()
-        print("Exiting...")
         print()
         return
 
@@ -55,119 +45,93 @@ def insert_DMU():
 
 
         print("DMU", i+1, ":")
-        dmu_id=""
-        smf_id=""
-        while(True):
-            while(len(dmu_id)!=6):
-                dmu_id = input("Enter DMU identification id (Enter 6 digit code): ")
-            while(len(smf_id)!=3):
-                smf_id = input("Enter SMF identification id (Enter 3 digit code): ")
-            if(dmu_id[:3]==smf_id):
-                break
-            else:
-                print("DMU id does not match with SMF id. Please enter a different DMU identification id.")
-        while(dmu_id in dmu_id_list):
-            print("DMU id already exists. Please enter a different DMU identification id.")
-            while(True):
-                while(len(dmu_id)!=6):
-                    dmu_id = input("Enter DMU identification id (Enter 6 digit code): ")
-                while(len(smf_id)!=3):
-                    smf_id = input("Enter SMF identification id (Enter 3 digit code): ")
-                if(dmu_id[:3]==smf_id):
-                    break
-                else:
-                    print("DMU id does not match with SMF id. Please enter a different DMU identification id.")
+
+        dmu_id = input("Enter DMU ID (3 letters): ")
+        dmu_id = smf_code + dmu_id.upper()
+        while(len(dmu_id) != 6 or dmu_id in dmu_id_list):
+            print("Invalid DMU ID. Please enter a valid DMU ID.")
+            dmu_id = input("Enter DMU ID (3 letters): ")
+            dmu_id = smf_code + dmu_id.upper()
+
         dmu_id_list.append(dmu_id) # to prevent inserting duplicate values by the user
 
         dmu_name = input("Enter DMU name: ")
+        while(len(dmu_name) > 30):
+            print("Invalid DMU name. Please enter a valid name (less than 30 characters).")
+            dmu_name = input("Enter DMU name: ")
+
 
         money = float(input("Enter money present: "))
-        while(money > 999999999999.99 or money < 0):
+        while(check_float_range(money) == False):
             print("Invalid money value. Please enter a valid number (between 0 and 999999999999.99).")
             money = float(input("Enter money present: "))
 
         id_count = int(input("Enter batch id counter: "))
-        while(id_count > 999999999999 or id_count < 0):
+        while(check_float_range(id_count) == False):
             print("Invalid batch id counter value. Please enter a valid number (between 0 and 999999999999).")
             id_count = int(input("Enter batch id counter: "))
 
         # append the values to the list
-        values.append((dmu_id, dmu_name,money,id_count))
+        dmu_values.append((dmu_id, dmu_name,money,id_count))
+        dmu_works_under_smf_values.append((dmu_id, smf_code))
         print()
 
 
 
     # insert the data in values into the table
-    sql = "INSERT INTO DMU VALUES (%s, %s, %s, %s, %s)"
-    mycursor.executemany(sql, values)
+    sql = "INSERT INTO DMU VALUES (%s, %s, %s, %s)"
+    mycursor.executemany(sql, dmu_values)
 
-    # commit the changes to the database
+    print(mycursor.rowcount, "record(s) inserted in dmu table.")
+    print()
+
+    sql = "INSERT INTO DMU_Works_Under_SMF VALUES (%s, %s)"
+    mycursor.executemany(sql, dmu_works_under_smf_values)
+
+    print(mycursor.rowcount, "record(s) inserted in dmu_works_under_smf table.")
+    print()
+
     mydb.commit()
 
-    # print the number of rows affected
-    print(mycursor.rowcount, "record(s) inserted.")
-    print()
+
+
 
 def modify_DMU(dmu_code, cursor, mydb):
 
     mycursor = cursor
 
-
     money = float(input("Enter money present: "))
-    while(money > 999999999999.99 or money < 0):
-        print("Invalid money value. Please enter a valid number (between 0 and 999999999999.99).")
+    while(check_float_range(money) == False):
+        print("Invalid money value. Please enter a valid number.")
         money = float(input("Enter money present: "))
 
     id_count = int(input("Enter batch id counter: "))
-    while(id_count > 999999999999 or id_count < 0):
-        print("Invalid batch id counter value. Please enter a valid number (between 0 and 999999999999).")
+    while(check_float_range(id_count) == False):
+        print("Invalid batch id counter value. Please enter a valid number.")
         id_count = int(input("Enter batch id counter: "))
 
-
-
-    sql = "UPDATE DMU SET money = %s, batch_id_counter = %s WHERE DMU_code = %s"
+    sql = "UPDATE DMU SET money = %s, batch_id_counter = %s WHERE district_code = %s"
     val = (money, id_count, dmu_code)
     mycursor.execute(sql, val)
 
-
-    print(mycursor.rowcount, "record(s) modified.")
+    print(mycursor.rowcount, "record(s) affected")
     print()
 
     mydb.commit()
 
 
 
+def select_DMU_In_SMF(smf_code, cursor):
 
-def display_DMU(district_code, cursor):
-    mycursor = cursor
-    sql = "SELECT * FROM DMU WHERE district_code = '{district_code}'".format(district_code=district_code)
-
-    mycursor.execute(sql)
-    dmu_data = mycursor.fetchall()
-
-    print("DMU chosen: ", dmu_data[0][1], sep="")
-    print("--------------------------------------------------------------")
-    print("|Code|\t\t|Name|\t|Money|\t\t|Batch_Counter|\t|State Code|")
-    print("--------------------------------------------------------------")
-    print(dmu_data[0][0], "\t\t", dmu_data[0][1], "\t", dmu_data[0][2], "\t\t",
-            dmu_data[0][3], "\t\t\t", dmu_data[0][0][:3])
-    print()
-    print()
-
-
-
-def select_DMU_In_SMF(state_chosen, cursor):
     mycursor = cursor
     query = """SELECT * FROM DMU
                         NATURAL JOIN DMU_Works_Under_SMF
-                        WHERE DMU_Works_Under_SMF.state_code = '{SMF}'""".format(SMF = state_chosen)
-
-
+                        WHERE DMU_Works_Under_SMF.state_code = '{SMF}'""".format(SMF = smf_code)
     mycursor.execute(query)
     dmu_data = mycursor.fetchall()
 
-
-    print("DMUs available:")
+    print()
+    print("DMUs available: ", smf_code, sep="")
     print("------------------------------------------------------------")
     print("|DMU Code|")
     print("------------------------------------------------------------")
@@ -176,20 +140,116 @@ def select_DMU_In_SMF(state_chosen, cursor):
         print(count, ". ", i[0], sep="")
         count += 1
     print(count, ". ", "Back", sep="")
-    dmuin = int(input("Enter your choice: "))
-    while (dmuin > len(dmu_data)+1 or dmuin < 1):
-        print("Invalid DMU. Please enter a valid Dairy Farmer.")
-        dmuin = int(input("Enter your choice: "))
-    if(dmuin!=len(dmu_data)+1):
-        dmu_chosen = dmu_data[dmuin - 1][0]
+    dfin = int(input("Enter your choice: "))
+    while(dfin > len(dmu_data) or dfin < 1):
+        print("Invalid DMU. Please enter a valid DMU.")
+        dfin = int(input("Enter your choice: "))
+    if(dfin!=len(dmu_data)+1):
+        dmu_chosen = dmu_data[dfin-1][0]
     else:
-        dmu_chosen=None
+        dmu_chosen = None
 
     return dmu_chosen
 
-def delete_DMU(dmu_id, mycursor, mydb):
-    sql = "DELETE FROM DMU WHERE district_code = '{fid}'".format(fid=dmu_id)
-    mycursor.execute(sql)
-    print(mycursor.rowcount, "record(s) deleted.")
+
+
+
+def display_DMU(dmu_chosen, cursor):
+
+    mycursor = cursor
+    query = "SELECT * FROM DMU WHERE district_code = '{dmu_id}'".format(dmu_id=dmu_chosen)
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+
+    print()
+    print("DMU Chosen: ", dmu_chosen, sep="")
+    print("--------------------------------------------------------------------------")
+    print("District Code\t\tDistrict Name\t\tMoney\t\tBatch ID Counter")
+    print("--------------------------------------------------------------------------")
+    print(myresult[0][0], "\t\t\t\t\t", myresult[0][1], "\t\t\t", myresult[0][2], "\t\t\t", myresult[0][3], sep="")
+
+    print()
+    print()
+
+    return
+
+
+def delete_DMU(dmu_chosen, cursor, mydb):
+
+    mycursor = cursor
+
+    get_vdcs_code_sql = "SELECT vdcs_code FROM VDCS_Works_Under_DMU WHERE district_code = '{dmu_coder}'".format(dmu_coder=dmu_chosen)
+    mycursor.execute(get_vdcs_code_sql)
+    vdcs_codes = mycursor.fetchall()
+    print(vdcs_codes)
+
+    delete_df_sql = "DELETE FROM Dairy_Farmer WHERE farmer_identification_id = '{fid}'"
+    get_aadhar_sql = "SELECT aadhar_card_id FROM Dairy_Farmer_Possesses WHERE farmer_identification_id = '{df_coder}'"
+    # print("2")
+
+    for vdcs_code in vdcs_codes:
+        get_df_code_sql = "SELECT farmer_identification_id FROM DF_Works_Under_VDCS WHERE vdcs_code = '{vdcs_coder}'".format(vdcs_coder=vdcs_code[0])
+        mycursor.execute(get_df_code_sql)
+        df_codes = mycursor.fetchall()
+        # print(df_codes)
+
+        for df_code in df_codes:
+            mycursor.execute(get_aadhar_sql.format(df_coder=df_code[0]))
+            aadhar_card_id = mycursor.fetchall()[0][0]
+            delete_aa_sql = "DELETE FROM AADHAR_CARD WHERE aadhar_card_id = '{aadhar_number}'".format(aadhar_number=aadhar_card_id)
+            mycursor.execute(delete_aa_sql)
+            # print("4")
+
+            mycursor.execute(delete_df_sql.format(fid=df_code[0]))
+
+        delete_vdcs_sql = "DELETE FROM VDCS WHERE vdcs_code = '{vdcs_code}'".format(vdcs_code=vdcs_code[0])
+        mycursor.execute(delete_vdcs_sql)
+
+    delete_dmu_sql = "DELETE FROM DMU WHERE district_code = '{dmu_code}'".format(dmu_code=dmu_chosen)
+    mycursor.execute(delete_dmu_sql)
+
+    print(mycursor.rowcount, "record(s) deleted")
+    print()
+
+
+
 
     mydb.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
