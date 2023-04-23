@@ -251,7 +251,8 @@ def select_DF_In_VDCS(vdcs_chosen, cursor):
 
 
 
-def delete_DF(farmer_identification_id, mycursor, mydb):
+def delete_DF(farmer_identification_id, cursor, mydb):
+    mycursor = cursor
     sql = "DELETE FROM Dairy_Farmer WHERE Farmer_Identification_Id = '{fid}'".format(fid=farmer_identification_id)
     mycursor.execute(sql)
     print(mycursor.rowcount, "record(s) deleted.")
@@ -283,3 +284,23 @@ def view_aadhar_details(df_chosen,cursor):
     print()
 
     return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
