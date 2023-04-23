@@ -98,3 +98,68 @@ def smf_seetry():
 
 # close the connection
     mydb.close()
+
+
+def display_SMF(smf_chosen, cursor):
+    mycursor = cursor
+    query = "SELECT * FROM SMF WHERE SMF_ID = '{smf_id}'".format(smf_id=smf_chosen)
+    mycursor.execute(query)
+    myresult = mycursor.fetchall()
+
+    print()
+    print("SMF Chosen: ", smf_chosen, sep="")
+    print("------------------------------------------------------------")
+    print("State Code\t\tState Name\t\tSold\t\tCost")
+    print("------------------------------------------------------------")
+    print(myresult[0][0], "\t\t\t", myresult[0][1], "\t\t", myresult[0][2], "\t\t", myresult[0][3], sep="")
+
+    print()
+    print()
+
+    return
+
+
+
+
+def modify_SMF(smf_code, cursor, mydb):
+
+    mycursor = cursor
+
+    sold = float(input("Enter money gained by selling: "))
+    while(check_float_range(sold) == False):
+        print("Invalid sold value.")
+        sold = float(input("Enter money gained by selling: "))
+
+    cost = float(input("Enter money gained by producing: "))
+    while(check_float_range(cost) == False):
+        print("Invalid cost value.")
+        cost = float(input("Enter money gained by producing: "))
+
+    sql = "UPDATE SMF SET sold = %s, cost = %s WHERE state_code = %s"
+    val = (sold, cost, smf_code)
+    mycursor.execute(sql, val)
+
+    print(mycursor.rowcount, "record(s) affected")
+    print()
+
+    mydb.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
