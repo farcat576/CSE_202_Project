@@ -134,7 +134,7 @@ def display_VDCS(vdcs_code, cursor):
     print()
     print("VDCS chosen: ", vdcs_code, sep="")
     print("-------------------------------------------------------------------------------------")
-    print("|VDCS Code|\t|Cattle Feed|\t|Money|\t|Milk Quantity|\t|Village Name|")
+    print("|VDCS Code|\t\t\t|Cattle Feed|\t\t|Money|\t\t\t|Milk Quantity|\t\t|Village Name|")
     print("-------------------------------------------------------------------------------------")
     print(vdcs_data[0][0], "\t\t", vdcs_data[0][1], "\t\t", vdcs_data[0][2], "\t\t", vdcs_data[0][3], "\t\t", vdcs_data[0][4], sep="")
 
@@ -146,14 +146,14 @@ def delete_VDCS(vdcs_code, cursor, mydb):
     get_df_code_sql = "SELECT farmer_identification_id FROM DF_Works_Under_VDCS WHERE vdcs_code = '{vdcs_coder}'".format(vdcs_coder=vdcs_code)
     mycursor.execute(get_df_code_sql)
     df_codes = mycursor.fetchall()
-    print(df_codes)
+    # print(df_codes)
 
     get_aadhar_sql = "SELECT aadhar_card_id FROM Dairy_Farmer_Possesses WHERE farmer_identification_id = '{df_coder}'"
     # print("Deleting Aadhar Cards")
     for df_code in df_codes:
         mycursor.execute(get_aadhar_sql.format(df_coder=df_code[0]))
         aadhar_card_id = mycursor.fetchall()[0][0]
-        print(aadhar_card_id)
+        # print(aadhar_card_id)
         delete_aa_sql = "DELETE FROM AADHAR_CARD WHERE aadhar_card_id = '{aadhar_number}'".format(aadhar_number=aadhar_card_id)
         mycursor.execute(delete_aa_sql)
 
