@@ -111,7 +111,7 @@ def start_SMF(data,mycursor,mydb):
     print()
 
     option = 0
-    while (option != 15):
+    while (option != 10):
         print("1. Display DMU")
         print("2. Add DMU")
         print("3. Delete DMU")
@@ -224,8 +224,7 @@ def start_SMF(data,mycursor,mydb):
             modify_SMF(data,mycursor, mydb)
 
         elif(option==14):
-            pass
-            #run_transactions(data,mycursor,mydb)
+            run_transactions(data,mycursor,mydb)
 
         elif (option == 15):
             break
@@ -292,9 +291,7 @@ def start_DMU(data,mycursor,mydb):
         elif (option == 5):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
             if (vdcs_chosen != None):
-                df_chosen = select_DF_In_VDCS(vdcs_chosen, mycursor)
-                if (df_chosen != None):
-                    display_DF(df_chosen, mycursor)
+                display_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor)
 
         elif (option == 6):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
@@ -309,17 +306,13 @@ def start_DMU(data,mycursor,mydb):
         elif (option == 7):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
             if (vdcs_chosen != None):
-                df_chosen = select_DF_In_VDCS(vdcs_chosen, mycursor)
-                if (df_chosen != None):
-                    delete_DF(df_chosen, mycursor, mydb)
+                delete_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor, mydb)
 
 
         elif (option == 8):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
             if (vdcs_chosen != None):
-                df_chosen = select_DF_In_VDCS(vdcs_chosen, mycursor)
-                if (df_chosen != None):
-                    modify_DF(df_chosen, mycursor, mydb)
+                modify_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor, mydb)
 
         elif (option == 9):
             modify_DMU(data, mycursor, mydb)
@@ -484,7 +477,7 @@ if __name__ == "__main__":
         mydb = mysql.connector.connect(
             host="localhost",
             user="root",
-            passwd="mysqlconnector10!!",
+            passwd="farhan",
             database="All_Levels"
         )
         print("Connected to the database.")
