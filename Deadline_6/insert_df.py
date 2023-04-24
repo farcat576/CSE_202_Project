@@ -253,8 +253,17 @@ def select_DF_In_VDCS(vdcs_chosen, cursor):
 
 def delete_DF(farmer_identification_id, cursor, mydb):
     mycursor = cursor
+
+    aadhar_sql = "SELECT Aadhar_Card_Id FROM Dairy_Farmer_Possesses WHERE farmer_identification_id = '{fid}'".format(fid=farmer_identification_id)
+    mycursor.execute(aadhar_sql)
+    aadhar_card_number = mycursor.fetchall()[0][0]
+
     sql = "DELETE FROM Dairy_Farmer WHERE Farmer_Identification_Id = '{fid}'".format(fid=farmer_identification_id)
     mycursor.execute(sql)
+
+    aadhar_delete_sql = "DELETE FROM Aadhar_Card WHERE aadhar_card_id = '{aadhar_card_numberer}'".format(aadhar_card_numberer=aadhar_card_number)
+    mycursor.execute(aadhar_delete_sql)
+
     print(mycursor.rowcount, "record(s) deleted.")
 
     mydb.commit()
