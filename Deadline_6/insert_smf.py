@@ -144,6 +144,80 @@ def modify_SMF(smf_code, cursor, mydb):
 
     mydb.commit()
 
+    def run_transactions(data,mycursor,mydb):
+    option = 0
+    while (option != 5):
+        print("1. Send 10000 in money to Surat DMU from Gujarat SMF")
+        print("2. Delete all dairy farmers in Nani Naroli")
+        print("3. Subtract 500 from all DMU transactions and add 500 to all SMF transactions")
+        print("4. Set all Vets and Animal Husbandry Workers' salaries to a tenth of original amount from Anand DMU")
+        print("5. Exit")
+        print()
+        option = int(input("Enter your choice: "))
+        while (option > 15 or option < 1):
+            print("Invalid option. Please enter a valid option.")
+            option = int(input("Enter your choice: "))
+        print()
+        if (option == 1):
+            try:
+                mycursor.execute("""SET SQL_SAFE_UPDATES=0""")
+                mycursor.execute("""UPDATE SMF set sold=sold-10000 WHERE state_code='GUJ'""")  
+                print(mycursor.rowcount, "record(s) updated in SMF.") 
+                mycursor.execute("""UPDATE DMU set money=money+10000 WHERE district_code='GUJSUR'""")
+                print(mycursor.rowcount, "record(s) updated in DMU.") 
+                mycursor.execute("""SET SQL_SAFE_UPDATES=1""")
+                print("Updated !")  
+                mydb.commit()
+                print("Committed !") 
+            except:  
+                print("Can't update !")  
+                mydb.commit() 
+            print() 
+        elif (option == 2):
+            try:
+                mycursor.execute("""SELECT COUNT(*) FROM Dairy_Farmer NATURAL JOIN DF_Works_Under_VDCS WHERE DF_Works_Under_VDCS.vdcs_code = 'SURNNN'""")
+                print(mycursor.fetchall()[0][0], "record(s) present.")
+                mycursor.execute("""DELETE from Dairy_Farmer where farmer_identification_id in (SELECT C.farmer_identification_id from (SELECT Dairy_Farmer.farmer_identification_id FROM Dairy_Farmer NATURAL JOIN DF_Works_Under_VDCS WHERE DF_Works_Under_VDCS.vdcs_code = 'SURNNN') as C)""")  
+                print(mycursor.rowcount, "record(s) deleted.") 
+                print("Deleted !")  
+                mydb.rollback()
+                print("Reverted !") 
+                mycursor.execute("""SELECT COUNT(*) FROM Dairy_Farmer NATURAL JOIN DF_Works_Under_VDCS WHERE DF_Works_Under_VDCS.vdcs_code = 'SURNNN'""")
+                print(mycursor.fetchall()[0][0], "record(s) present.") 
+            except:  
+                print("Can't delete !")  
+                mydb.rollback() 
+            print() 
+        elif (option == 3):
+            try:
+                mycursor.execute("""SET SQL_SAFE_UPDATES=0""")
+                mycursor.execute("""UPDATE DMU_Transaction set amount_sent=amount_sent-500""")  
+                print(mycursor.rowcount, "record(s) updated in DMU_Transaction.") 
+                mycursor.execute("""UPDATE SMF_Transaction set amount_sent=amount_sent+500""")
+                print(mycursor.rowcount, "record(s) updated in SMF_Transaction.") 
+                mycursor.execute("""SET SQL_SAFE_UPDATES=1""")
+                print("Updated !")  
+                mydb.commit()
+                print("Committed !") 
+            except:  
+                print("Can't update !")  
+                mydb.commit() 
+            print()
+        elif (option == 4):
+            try:
+                mycursor.execute("""SET SQL_SAFE_UPDATES=0""")
+                mycursor.execute("""UPDATE VAHP SET salary=0.1*salary WHERE vah_id in (SELECT vahp_id from (SELECT vahp_id FROM VAHP NATURAL JOIN Works_Here WHERE Works_Here.vdcs_code in (Select vdcs_code from VDCS_Works_Under_DMU where district_code="GUJAND"))as C)""")  
+                print(mycursor.rowcount, "record(s) updated.") 
+                mycursor.execute("""SET SQL_SAFE_UPDATES=1""")
+                print("Updated !")  
+                mydb.rollback()
+                print("Reverted !") 
+            except:  
+                print("Can't update !")  
+                mydb.rollback() 
+            print()
+        else:
+            break
 
 
 
