@@ -111,7 +111,7 @@ def start_SMF(data,mycursor,mydb):
     print()
 
     option = 0
-    while (option != 10):
+    while (option != 15):
         print("1. Display DMU")
         print("2. Add DMU")
         print("3. Delete DMU")
@@ -292,7 +292,9 @@ def start_DMU(data,mycursor,mydb):
         elif (option == 5):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
             if (vdcs_chosen != None):
-                display_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor)
+                df_chosen = select_DF_In_VDCS(vdcs_chosen, mycursor)
+                if (df_chosen != None):
+                    display_DF(df_chosen, mycursor)
 
         elif (option == 6):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
@@ -307,13 +309,17 @@ def start_DMU(data,mycursor,mydb):
         elif (option == 7):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
             if (vdcs_chosen != None):
-                delete_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor, mydb)
+                df_chosen = select_DF_In_VDCS(vdcs_chosen, mycursor)
+                if (df_chosen != None):
+                    delete_DF(df_chosen, mycursor, mydb)
 
 
         elif (option == 8):
             vdcs_chosen = select_VDCS_In_DMU(data, mycursor)
             if (vdcs_chosen != None):
-                modify_DF(select_DF_In_VDCS(vdcs_chosen, mycursor), mycursor, mydb)
+                df_chosen = select_DF_In_VDCS(vdcs_chosen, mycursor)
+                if (df_chosen != None):
+                    modify_DF(df_chosen, mycursor, mydb)
 
         elif (option == 9):
             modify_DMU(data, mycursor, mydb)
