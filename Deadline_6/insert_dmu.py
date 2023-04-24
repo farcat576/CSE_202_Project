@@ -181,7 +181,7 @@ def delete_DMU(dmu_chosen, cursor, mydb):
     get_vdcs_code_sql = "SELECT vdcs_code FROM VDCS_Works_Under_DMU WHERE district_code = '{dmu_coder}'".format(dmu_coder=dmu_chosen)
     mycursor.execute(get_vdcs_code_sql)
     vdcs_codes = mycursor.fetchall()
-    print(vdcs_codes)
+    # print(vdcs_codes)
 
     delete_df_sql = "DELETE FROM Dairy_Farmer WHERE farmer_identification_id = '{fid}'"
     get_aadhar_sql = "SELECT aadhar_card_id FROM Dairy_Farmer_Possesses WHERE farmer_identification_id = '{df_coder}'"
